@@ -1,0 +1,33 @@
+{% load static %}
+{% with request.resolver_match.view_name as view_name %}
+<header>
+  <nav class="nav" style="background-color: lightskyblue; padding: 0.5rem 1rem;">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a class="nav-link" href="{% url 'blog:index' %}" style="display: flex; align-items: center; gap: 0.5rem;">
+        <img src="{% static 'img/logo.png' %}" width="30" height="30" alt="Логотип Блогикум" style="border-radius: 4px;">
+        <span style="font-weight: 600; color: var(--black);">Блогикум</span>
+      </a>
+
+      <ul class="nav">
+        <li class="nav-item">
+          <a href="{% url 'pages:about' %}" class="nav-link {% if view_name == 'pages:about' %}active{% endif %}">О проекте</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'pages:rules' %}" class="nav-link {% if view_name == 'pages:rules' %}active{% endif %}">Правила</a>
+        </li>
+      </ul>
+
+      <div class="btn-group">
+        {% if user.is_authenticated %}
+          <a href="{% url 'blog:create_post' %}" class="nav-link btn btn-outline">Написать пост</a>
+          <a href="{% url 'blog:profile' user.username %}" class="nav-link btn btn-outline">{{ user.username }}</a>
+          <a href="{% url 'logout' %}" class="nav-link btn btn-outline">Выйти</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="nav-link btn btn-outline">Войти</a>
+          <a href="{% url 'registration' %}" class="nav-link btn btn-outline">Регистрация</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+</header>
+{% endwith %}

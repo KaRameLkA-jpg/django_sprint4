@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if '/edit/' in request.path %}
+    Редактирование публикации
+  {% elif "/delete/" in request.path %}
+    Удаление публикации
+  {% else %}
+    Добавление публикации
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <section class="text-center" style="max-width: 640px; margin: 0 auto;">
+    <div class="post-card">
+      <h2 class="section-title" style="margin-bottom: 1rem;">
+        {% if '/edit/' in request.path %}
+          Редактирование публикации
+        {% elif '/delete/' in request.path %}
+          Удаление публикации
+        {% else %}
+          Добавление публикации
+        {% endif %}
+      </h2>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if not '/delete/' in request.path %}
+          <div style="margin-bottom: 1.5rem;">
+            {{ form.non_field_errors }}
+            {% for field in form %}
+              <div class="form-group" style="margin-bottom: 1rem; text-align: left;">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  <div style="color: var(--pink); font-size: 0.85rem;">
+                    {{ field.errors }}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <article>
+            {% if form.instance.image %}
+              <a href="{{ form.instance.image.url }}" target="_blank" style="display: inline-block; margin-bottom: 1rem;">
+                <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title }}" style="max-width: 100%; border: 2px solid var(--pink); border-radius: 8px;">
+              </a>
+            {% endif %}
+            <p style="color: var(--pink); margin: 0.5rem 0;">
+              {{ form.instance.pub_date|date:"d E Y" }} | 
+              {% if form.instance.location and form.instance.location.is_published %}
+                {{ form.instance.location.name }}
+              {% else %}
+                Планета Земля
+              {% endif %}
+            </p>
+            <h3 style="color: var(--neon); margin-top: 0;">{{ form.instance.title }}</h3>
+            <p style="white-space: pre-wrap;">{{ form.instance.text }}</p>
+          </article>
+        {% endif %}
+
+        <button type="submit" class="read-more">Отправить</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}

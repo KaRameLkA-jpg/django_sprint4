@@ -1,0 +1,40 @@
+{% if user.is_authenticated %}
+  <h5 class="section-title">Оставить комментарий</h5>
+  <form method="post" action="{% url 'blog:add_comment' post.id %}" style="max-width: 600px; margin-bottom: 2rem;">
+    {% csrf_token %}
+    {% for field in form %}
+      <div style="margin-bottom: 1rem;">
+        <label for="{{ field.id_for_label }}" style="color: var(--pink); font-weight: 600;">
+          {{ field.label }}
+        </label>
+        {{ field|as_widget(attrs={"class": "post-card", "style": "width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--pink); background: var(--black); color: var(--white);"}) }}
+        {% if field.help_text %}
+          <small style="color: var(--pink);">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <div style="color: #ff4d4d; font-size: 0.9rem;">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="read-more">Отправить</button>
+  </form>
+{% endif %}
+
+{% for comment in comments %}
+  <div class="post-card" style="margin-bottom: 1.5rem; padding: 1rem;">
+    <h5 style="color: var(--neon); margin-bottom: 0.3rem;">
+      <a href="{% url 'blog:profile' comment.author.username %}" name="comment_{{ comment.id }}" style="color: var(--pink); text-decoration: none;">
+        @{{ comment.author.username }}
+      </a>
+    </h5>
+    <small style="color: var(--pink); font-size: 0.85rem;">{{ comment.created_at }}</small>
+    <p style="margin-top: 0.5rem; white-space: pre-wrap;">{{ comment.text|linebreaksbr }}</p>
+
+    {% if user == comment.author %}
+      <div style="margin-top: 0.5rem;">
+        <a href="{% url 'blog:edit_comment' post.id comment.id %}" class="nav-link" style="font-size: 0.9rem; padding: 0.2rem 0.5rem;">Отредактировать</a>
+        <a href="{% url 'blog:delete_comment' post.id comment.id %}" class="nav-link" style="font-size: 0.9rem; padding: 0.2rem 0.5rem;">Удалить</a>
+      </div>
+    {% endif %}
+  </div>
+{% endfor %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if '/edit_comment/' in request.path %}
+    Редактирование комментария
+  {% else %}
+    Удаление комментария
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <section class="text-center" style="max-width: 600px; margin: 0 auto;">
+      <div class="post-card">
+        <h2 class="section-title" style="margin-bottom: 1rem;">
+          {% if '/edit_comment/' in request.path %}
+            Редактирование комментария
+          {% else %}
+            Удаление комментария
+          {% endif %}
+        </h2>
+        <form method="post"
+          {% if '/edit_comment/' in request.path %}
+            action="{% url 'blog:edit_comment' comment.post_id comment.id %}"
+          {% endif %}>
+          {% csrf_token %}
+          
+          {% if not '/delete_comment/' in request.path %}
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              {{ form.text.label_tag }}
+              {{ form.text }}
+              {% if form.text.errors %}
+                <div style="color: var(--pink); font-size: 0.85rem;">
+                  {{ form.text.errors }}
+                </div>
+              {% endif %}
+            </div>
+          {% else %}
+            <p style="margin: 1rem 0;">{{ comment.text }}</p>
+          {% endif %}
+
+          <button type="submit" class="read-more">Отправить</button>
+        </form>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

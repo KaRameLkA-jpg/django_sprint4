@@ -1,0 +1,24 @@
+<div class="post-wrapper">
+  <div class="post-card" style="max-width: 640px; margin: 0 auto;">
+    {% if post.image %}
+      <a href="{{ post.image.url }}" target="_blank">
+        <img class="post-image" src="{{ post.image.url }}" alt="{{ post.title }}">
+      </a>
+    {% endif %}
+    <h5 class="post-title">{{ post.title }}</h5>
+    <h6 class="post-subtitle">
+      {% if not post.is_published %}
+        <p class="text-danger">Пост снят с публикации админом</p>
+      {% elif not post.category.is_published %}
+        <p class="text-danger">Выбранная категория снята с публикации админом</p>
+      {% endif %}
+      {{ post.pub_date|date:"d E Y, H:i" }} | 
+      {% if post.location and post.location.is_published %}{{ post.location.name }}{% else %}Планета Земля{% endif %}
+      <br>
+      От автора <a class="author-link" href="{% url 'blog:profile' post.author.username %}">@{{ post.author.username }}</a> в категории {% include "includes/category_link.html" %}
+    </h6>
+    <p class="post-excerpt">{{ post.text|truncatewords:10 }}</p>
+    <a href="{% url 'blog:post_detail' post.id %}" class="read-more">Читать полный текст</a>
+    <a href="{% url 'blog:post_detail' post.id %}" class="comments-link">Комментарии ({{ post.comment_count }})</a>
+  </div>
+</div>
