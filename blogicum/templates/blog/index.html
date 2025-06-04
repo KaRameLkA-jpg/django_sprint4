@@ -1,14 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Лента записей{% endblock %}
 {% block content %}
-  <section style="max-width: 1200px; margin: 0 auto; padding: 2rem 0;">
-    <div class="posts-grid">
-      {% for post in page_obj %}
-        <article>
-          {% include "includes/post_card.html" %}
-        </article>
-      {% endfor %}
-    </div>
-    {% include "includes/paginator.html" %}
-  </section>
+  {% for post in page_obj %}
+    <article class="mb-5">
+      {% include "includes/post_card.html" %}
+    </article>
+  {% endfor %}
+  {% include "includes/paginator.html" %}
 {% endblock %}
